@@ -3,6 +3,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <limits>
+#include <cctype>
 
 // Student structure to hold student information
 struct Student {
@@ -84,8 +86,61 @@ int main() {
         switch (choice) {
             case 'C': std::cout << "Create placeholder\n"; break;
             case 'R': std::cout << "Read placeholder\n"; break;
-            case 'U': std::cout << "Update placeholder\n"; break;
+            case 'U': {
+
+    if (roster.empty()) {
+        std::cout << "Roster is empty.\n";
+        break;
+    }
+
+    int index;
+
+    // Show roster so user knows what to update
+    for (int i = 0; i < roster.size(); i++) {
+        std::cout << i << ": "
+                  << roster[i].studentID << " - "
+                  << roster[i].name << "\n";
+    }
+
+    std::cout << "Enter index to update: ";
+    std::cin >> index;
+
+    if (index < 0 || index >= roster.size()) {
+        std::cout << "Invalid index.\n";
+        break;
+    }
+
+    Student &s = roster[index]; // reference so we modify directly
+
+    std::cout << "Updating student: " << s.name << "\n";
+
+    std::cout << "Enter new Student ID: ";
+    std::cin >> s.studentID;
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    std::cout << "Enter new Name: ";
+    std::getline(std::cin, s.name);
+
+    std::cout << "Enter new Sport: ";
+    std::getline(std::cin, s.sport);
+
+    std::cout << "Enter new Jersey Number: ";
+    std::cin >> s.jerseyNumber;
+
+    std::cout << "Enter new Age: ";
+    std::cin >> s.age;
+
+    std::cout << "Record updated successfully.\n";
+    break;
+}
             case 'D':{
+
+    if (roster.empty()) {
+        std::cout << "Roster is empty.\n";
+        break;
+    }
+
     int index;
 
     // Show roster so user knows what to delete
