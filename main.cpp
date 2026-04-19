@@ -5,6 +5,7 @@
 #include <vector>
 #include <limits>
 #include <cctype>
+#include <iomanip>
 
 // Student structure to hold student information
 struct Student {
@@ -40,7 +41,9 @@ void loadFromFile(std::vector<Student>& roster) {  // Function to load student d
         s.jerseyNumber = std::stoi(jerseyNumberStr);  // Convert string to integer and assign jersey number
         s.age = std::stoi(ageStr);  // Convert string to integer and assign age
 
-        roster.push_back(s);  // Add the student to the roster vector
+        if (!s.studentID.empty()) {
+        roster.push_back(s);  // Add the student to the roster vector only if valid
+        }
     }
 
     file.close();  // Close the file
@@ -66,26 +69,122 @@ void saveToFile(std::vector<Student>& roster) {  // Function to save student dat
     file.close();  // Close the file
     std::cout << "Data saved successfully.\n";  // Display success message
 }
+// =======================
+// CREATE FUNCTION (CASE C)
+// This function adds a new student record to the roster
+// =======================
+void createRecord(std::vector<Student>& roster) {
+    Student s;
+    
+    while (true) {
+        std::cout << "Enter Student ID: ";
+        std::cin >> s.studentID;
+        if (s.studentID.length() == 6) break;
+        std::cout << "Invalid! ID must be exactly 6 digits.\n";
+    }
+    
+    std::cin.ignore();
+    std::cout << "Enter Name: ";
+    std::getline(std::cin, s.name);
+    if (!s.name.empty() && islower(s.name[0])) {
+        s.name[0] = toupper(s.name[0]);
+    }
+    
+    while (true) {
+        std::cout << "Enter Sport (Volleyball, Basketball, Badminton): ";
+        std::getline(std::cin, s.sport);
+        if (!s.sport.empty() && islower(s.sport[0])) s.sport[0] = toupper(s.sport[0]);
+        if (s.sport == "Volleyball" || s.sport == "Basketball" || s.sport == "Badminton") break;
+        std::cout << "Invalid Sport! Please choose from the allowed list.\n";
+    }
+    
+    while (true) {
+    std::cout << "Enter New Jersey Number: ";
+    if (std::cin >> s.jerseyNumber) {
+        if (s.jerseyNumber >= 0 && s.jerseyNumber <= 99) break;
+        std::cout << "Invalid! Must be between 0 and 99.\n";
+    } else {
+        std::cout << "Invalid! Please enter a number.\n";
+        std::cin.clear(); // clear error state
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush bad input
+    }
+}
+    
+    while (true) {
+    std::cout << "Enter New Age: ";
+    if (std::cin >> s.age) {
+        if (s.age >= 10 && s.age <= 99) break;
+        std::cout << "Invalid!\n";
+    } else {
+        std::cout << "Invalid! Please enter a number.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
+    
+    roster.push_back(s);
+    std::cout << "Record added successfully!\n";
+}
 
+// =======================
+// READ FUNCTION (CASE R)
+// This function displays all student records in a formatted table
+// =======================
+void readRecords(const std::vector<Student>& roster) {
+    if (roster.empty()) {
+        std::cout << "No records found.\n";
+        return;
+    }
+
+    std::cout << "\n" << std::left 
+              << std::setw(10) << "ID" 
+              << std::setw(20) << "Name" 
+              << std::setw(15) << "Sport" 
+              << std::setw(10) << "Jersey" 
+              << std::setw(5)  << "Age" << "\n";
+    std::cout << std::string(70, '-') << "\n";
+
+    for (const auto& s : roster) {
+        std::cout << std::left 
+                  << std::setw(10) << s.studentID 
+                  << std::setw(20) << s.name 
+                  << std::setw(15) << s.sport 
+                  << std::setw(10) << s.jerseyNumber 
+                  << std::setw(5)  << s.age << "\n";
+    }
+}
 // =======================
 // UPDATE FUNCTION (CASE U)
 // This function allows editing of an existing student record
 // =======================
 void updateStudent(std::vector<Student>& roster) {
 
-    if (roster.empty()) {
-        std::cout << "Roster is empty.\n";
-        return;
-    }
-
     int index;
 
     // Display all students so user can choose which one to update
-    for (int i = 0; i < roster.size(); i++) {
-        std::cout << i << ": "
-                  << roster[i].studentID << " - "
-                  << roster[i].name << "\n";
+    if (roster.empty()) {
+        std::cout << "No records found.\n";
+        return;
     }
+
+    std::cout << "\n" << std::left 
+              << std::setw(10) << "Index"
+              << std::setw(10) << "ID" 
+              << std::setw(20) << "Name" 
+              << std::setw(15) << "Sport" 
+              << std::setw(10) << "Jersey" 
+              << std::setw(5)  << "Age" << "\n";
+    std::cout << std::string(70, '-') << "\n";
+
+    for (int i = 0; i < roster.size(); i++) {
+    std::cout << std::left 
+              << std::setw(10) << i
+              << std::setw(10) << roster[i].studentID 
+              << std::setw(20) << roster[i].name 
+              << std::setw(15) << roster[i].sport 
+              << std::setw(10) << roster[i].jerseyNumber 
+              << std::setw(5)  << roster[i].age << "\n";
+}
 
     std::cout << "Enter index to update: ";
     std::cin >> index;
@@ -98,24 +197,52 @@ void updateStudent(std::vector<Student>& roster) {
     Student &s = roster[index]; // reference so changes directly affect original data
 
     std::cout << "Updating student: " << s.name << "\n";
-
-    std::cout << "Enter new Student ID: ";
-    std::cin >> s.studentID;
-
+    
+    while (true) {
+        std::cout << "Enter New Student ID: ";
+        std::cin >> s.studentID;
+        if (s.studentID.length() == 6) break;
+        std::cout << "Invalid! ID must be exactly 6 digits.\n";
+    }
+    
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    std::cout << "Enter new Name: ";
+    std::cout << "Enter New Name: ";
     std::getline(std::cin, s.name);
-
-    std::cout << "Enter new Sport: ";
-    std::getline(std::cin, s.sport);
-
-    std::cout << "Enter new Jersey Number: ";
-    std::cin >> s.jerseyNumber;
-
-    std::cout << "Enter new Age: ";
-    std::cin >> s.age;
-
+    if (!s.name.empty() && islower(s.name[0])) {
+        s.name[0] = toupper(s.name[0]);
+    }
+    
+    while (true) {
+        std::cout << "Enter New Sport (Volleyball, Basketball, Badminton): ";
+        std::getline(std::cin, s.sport);
+        if (!s.sport.empty() && islower(s.sport[0])) s.sport[0] = toupper(s.sport[0]);
+        if (s.sport == "Volleyball" || s.sport == "Basketball" || s.sport == "Badminton") break;
+        std::cout << "Invalid Sport! Please choose from the allowed list.\n";
+    }
+    
+    while (true) {
+    std::cout << "Enter New Jersey Number: ";
+    if (std::cin >> s.jerseyNumber) {
+        if (s.jerseyNumber >= 0 && s.jerseyNumber <= 99) break;
+        std::cout << "Invalid! Must be between 0 and 99.\n";
+    } else {
+        std::cout << "Invalid! Please enter a number.\n";
+        std::cin.clear(); // clear error state
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush bad input
+    }
+}   
+    
+    while (true) {
+    std::cout << "Enter New Age: ";
+    if (std::cin >> s.age) {
+        if (s.age >= 0 && s.age <= 99) break;
+        std::cout << "Invalid! Must be between 0 and 99.\n";
+    } else {
+        std::cout << "Invalid! Please enter a number.\n";
+        std::cin.clear(); // clear error state
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush bad input
+    }
+}   
     std::cout << "Record updated successfully.\n";
 }
 
@@ -133,11 +260,24 @@ void deleteStudent(std::vector<Student>& roster) {
     int index;
 
     // Display all students so user can choose which one to delete
+    std::cout << "\n" << std::left 
+              << std::setw(10) << "Index"
+              << std::setw(10) << "ID" 
+              << std::setw(20) << "Name" 
+              << std::setw(15) << "Sport" 
+              << std::setw(10) << "Jersey" 
+              << std::setw(5)  << "Age" << "\n";
+    std::cout << std::string(70, '-') << "\n";
+
     for (int i = 0; i < roster.size(); i++) {
-        std::cout << i << ": "
-                  << roster[i].studentID << " - "
-                  << roster[i].name << "\n";
-    }
+    std::cout << std::left 
+              << std::setw(10) << i
+              << std::setw(10) << roster[i].studentID 
+              << std::setw(20) << roster[i].name 
+              << std::setw(15) << roster[i].sport 
+              << std::setw(10) << roster[i].jerseyNumber 
+              << std::setw(5)  << roster[i].age << "\n";
+}
 
     std::cout << "Enter index to delete: ";
     std::cin >> index;
@@ -167,17 +307,13 @@ int main() {
         std::cout << "[E] Exit\n";
         std::cout << "Enter choice: ";
         std::cin >> choice;
-        choice = toupper(choice);  // Case senstive
+        choice = toupper(choice);  // Convert to uppercase to handle case insensitive input
 
         switch (choice) {
-            case 'C': std::cout << "Create placeholder\n"; break;
-            case 'R': std::cout << "Read placeholder\n"; break;
-            case 'U':
-                updateStudent(roster);
-                break;
-            case 'D':
-                deleteStudent(roster);
-                break;
+            case 'C': createRecord(roster); break;
+            case 'R': readRecords(roster); break;
+            case 'U': updateStudent(roster);break;
+            case 'D': deleteStudent(roster);break;
             case 'E': saveToFile(roster); std::cout << "Exiting...\n";break;
             default: std::cout << "Invalid choice.\n";
         }
