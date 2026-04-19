@@ -46,6 +46,7 @@ void loadFromFile(std::vector<Student>& roster) {  // Function to load student d
     file.close();  // Close the file
     std::cout << "Data loaded successfully.\n";  // Display success message
 }
+
 void saveToFile(std::vector<Student>& roster) {  // Function to save student data to file
     std::ofstream file("roster.txt");  // Open the roster.txt file for writing
 
@@ -65,37 +66,21 @@ void saveToFile(std::vector<Student>& roster) {  // Function to save student dat
     file.close();  // Close the file
     std::cout << "Data saved successfully.\n";  // Display success message
 }
-// Main function that displays a menu for CRUD operations
-int main() {
-    std::vector<Student> roster;  // Create a vector to store all students
-    loadFromFile(roster);  // Load existing student data from file
 
-    char choice;
-
-    do {
-        std::cout << "\n=== Student Sports Roster ===\n";
-        std::cout << "[C] Create\n";
-        std::cout << "[R] Read\n";
-        std::cout << "[U] Update\n";
-        std::cout << "[D] Delete\n";
-        std::cout << "[E] Exit\n";
-        std::cout << "Enter choice: ";
-        std::cin >> choice;
-        choice = toupper(choice);  // Case senstive
-
-        switch (choice) {
-            case 'C': std::cout << "Create placeholder\n"; break;
-            case 'R': std::cout << "Read placeholder\n"; break;
-            case 'U': {
+// =======================
+// UPDATE FUNCTION (CASE U)
+// This function allows editing of an existing student record
+// =======================
+void updateStudent(std::vector<Student>& roster) {
 
     if (roster.empty()) {
         std::cout << "Roster is empty.\n";
-        break;
+        return;
     }
 
     int index;
 
-    // Show roster so user knows what to update
+    // Display all students so user can choose which one to update
     for (int i = 0; i < roster.size(); i++) {
         std::cout << i << ": "
                   << roster[i].studentID << " - "
@@ -107,10 +92,10 @@ int main() {
 
     if (index < 0 || index >= roster.size()) {
         std::cout << "Invalid index.\n";
-        break;
+        return;
     }
 
-    Student &s = roster[index]; // reference so we modify directly
+    Student &s = roster[index]; // reference so changes directly affect original data
 
     std::cout << "Updating student: " << s.name << "\n";
 
@@ -132,18 +117,22 @@ int main() {
     std::cin >> s.age;
 
     std::cout << "Record updated successfully.\n";
-    break;
 }
-            case 'D':{
+
+// =======================
+// DELETE FUNCTION (CASE D)
+// This function removes a selected student from the roster
+// =======================
+void deleteStudent(std::vector<Student>& roster) {
 
     if (roster.empty()) {
         std::cout << "Roster is empty.\n";
-        break;
+        return;
     }
 
     int index;
 
-    // Show roster so user knows what to delete
+    // Display all students so user can choose which one to delete
     for (int i = 0; i < roster.size(); i++) {
         std::cout << i << ": "
                   << roster[i].studentID << " - "
@@ -155,13 +144,40 @@ int main() {
 
     if (index < 0 || index >= roster.size()) {
         std::cout << "Invalid index.\n";
-        break;
+        return;
     }
 
-    roster.erase(roster.begin() + index);
+    roster.erase(roster.begin() + index); // remove selected student from vector
     std::cout << "Record deleted.\n";
-    break;
 }
+
+// Main function that displays a menu for CRUD operations
+int main() {
+    std::vector<Student> roster;  // Create a vector to store all students
+    loadFromFile(roster);  // Load existing student data from file
+
+    char choice;
+
+    do {
+        std::cout << "\n=== Student Sports Roster ===\n";
+        std::cout << "[C] Create\n";
+        std::cout << "[R] Read\n";
+        std::cout << "[U] Update\n";
+        std::cout << "[D] Delete\n";
+        std::cout << "[E] Exit\n";
+        std::cout << "Enter choice: ";
+        std::cin >> choice;
+        choice = toupper(choice);  // Case senstive
+
+        switch (choice) {
+            case 'C': std::cout << "Create placeholder\n"; break;
+            case 'R': std::cout << "Read placeholder\n"; break;
+            case 'U':
+                updateStudent(roster);
+                break;
+            case 'D':
+                deleteStudent(roster);
+                break;
             case 'E': saveToFile(roster); std::cout << "Exiting...\n";break;
             default: std::cout << "Invalid choice.\n";
         }
