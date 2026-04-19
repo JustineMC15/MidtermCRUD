@@ -44,7 +44,25 @@ void loadFromFile(std::vector<Student>& roster) {
     file.close();
     std::cout << "Data loaded successfully.\n";
 }
+void saveToFile(std::vector<Student>& roster) {
+    std::ofstream file("roster.txt");
 
+    if (!file.is_open()) {
+        std::cout << "Error saving data.\n";
+        return;
+    }
+
+    for (int i = 0; i < roster.size(); i++) {
+        file << roster[i].studentID << ","
+             << roster[i].name << ","
+             << roster[i].sport << ","
+             << roster[i].jerseyNumber << ","
+             << roster[i].age << "\n";
+    }
+
+    file.close();
+    std::cout << "Data saved successfully.\n";
+}
 int main() {
     std::vector<Student> roster;
     loadFromFile(roster);
@@ -67,7 +85,7 @@ int main() {
             case 'R': std::cout << "Read placeholder\n"; break;
             case 'U': std::cout << "Update placeholder\n"; break;
             case 'D': std::cout << "Delete placeholder\n"; break;
-            case 'E': std::cout << "Exiting...\n"; break;
+            case 'E': saveToFile(roster); std::cout << "Exiting...\n";break;
             default: std::cout << "Invalid choice.\n";
         }
 
