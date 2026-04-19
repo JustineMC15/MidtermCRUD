@@ -11,8 +11,43 @@ struct Student {
     int jerseyNumber;
     int age;
 };
+
+void loadFromFile(std::vector<Student>& roster) {
+    std::ifstream file("roster.txt");
+
+    if (!file.is_open()) {
+        std::cout << "No existing data found. Starting fresh.\n";
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string studentID, name, sport, jerseyNumberStr, ageStr;
+
+        std::getline(ss, studentID, ',');
+        std::getline(ss, name, ',');
+        std::getline(ss, sport, ',');
+        std::getline(ss, jerseyNumberStr, ',');
+        std::getline(ss, ageStr, ',');
+
+        Student s;
+        s.studentID = studentID;
+        s.name = name;
+        s.sport = sport;
+        s.jerseyNumber = std::stoi(jerseyNumberStr);
+        s.age = std::stoi(ageStr);
+
+        roster.push_back(s);
+    }
+
+    file.close();
+    std::cout << "Data loaded successfully.\n";
+}
+
 int main() {
     std::vector<Student> roster;
+    loadFromFile(roster);
 
     char choice;
 
