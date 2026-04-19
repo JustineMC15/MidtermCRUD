@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+// Student structure to hold student information
 struct Student {
     std::string studentID;
     std::string name;
@@ -11,19 +12,18 @@ struct Student {
     int jerseyNumber;
     int age;
 };
+void loadFromFile(std::vector<Student>& roster) {  // Function to load student data from file
+    std::ifstream file("roster.txt");  // Open the roster.txt file for reading using input file stream
 
-void loadFromFile(std::vector<Student>& roster) {
-    std::ifstream file("roster.txt");
-
-    if (!file.is_open()) {
-        std::cout << "No existing data found. Starting fresh.\n";
-        return;
+    if (!file.is_open()) {  // Check if file failed to open
+        std::cout << "No existing data found. Starting fresh.\n";  // Display message if file doesn't exist
+        return;  // Exit the function early
     }
 
     std::string line;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
-        std::string studentID, name, sport, jerseyNumberStr, ageStr;
+        std::string studentID, name, sport, jerseyNumberStr, ageStr; // Parses data
 
         std::getline(ss, studentID, ',');
         std::getline(ss, name, ',');
@@ -35,21 +35,21 @@ void loadFromFile(std::vector<Student>& roster) {
         s.studentID = studentID;
         s.name = name;
         s.sport = sport;
-        s.jerseyNumber = std::stoi(jerseyNumberStr);
-        s.age = std::stoi(ageStr);
+        s.jerseyNumber = std::stoi(jerseyNumberStr);  // Convert string to integer and assign jersey number
+        s.age = std::stoi(ageStr);  // Convert string to integer and assign age
 
-        roster.push_back(s);
+        roster.push_back(s);  // Add the student to the roster vector
     }
 
-    file.close();
-    std::cout << "Data loaded successfully.\n";
+    file.close();  // Close the file
+    std::cout << "Data loaded successfully.\n";  // Display success message
 }
-void saveToFile(std::vector<Student>& roster) {
-    std::ofstream file("roster.txt");
+void saveToFile(std::vector<Student>& roster) {  // Function to save student data to file
+    std::ofstream file("roster.txt");  // Open the roster.txt file for writing
 
-    if (!file.is_open()) {
-        std::cout << "Error saving data.\n";
-        return;
+    if (!file.is_open()) {  // Check if file failed to open
+        std::cout << "Error saving data.\n";  // Display error message if file can't be created
+        return;  // Exit the function early
     }
 
     for (int i = 0; i < roster.size(); i++) {
@@ -60,12 +60,13 @@ void saveToFile(std::vector<Student>& roster) {
              << roster[i].age << "\n";
     }
 
-    file.close();
-    std::cout << "Data saved successfully.\n";
+    file.close();  // Close the file
+    std::cout << "Data saved successfully.\n";  // Display success message
 }
+// Main function that displays a menu for CRUD operations
 int main() {
-    std::vector<Student> roster;
-    loadFromFile(roster);
+    std::vector<Student> roster;  // Create a vector to store all students
+    loadFromFile(roster);  // Load existing student data from file
 
     char choice;
 
@@ -78,7 +79,7 @@ int main() {
         std::cout << "[E] Exit\n";
         std::cout << "Enter choice: ";
         std::cin >> choice;
-        choice = toupper(choice);
+        choice = toupper(choice);  // Case senstive
 
         switch (choice) {
             case 'C': std::cout << "Create placeholder\n"; break;
@@ -89,7 +90,7 @@ int main() {
             default: std::cout << "Invalid choice.\n";
         }
 
-    } while (choice != 'E');
+    } while (choice != 'E');  // Repeat loop until user selects Exit
 
-    return 0;
+    return 0;  // Exit the program with success status
 }
