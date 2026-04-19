@@ -85,7 +85,28 @@ int main() {
             case 'C': std::cout << "Create placeholder\n"; break;
             case 'R': std::cout << "Read placeholder\n"; break;
             case 'U': std::cout << "Update placeholder\n"; break;
-            case 'D': std::cout << "Delete placeholder\n"; break;
+            case 'D':{
+    int index;
+
+    // Show roster so user knows what to delete
+    for (int i = 0; i < roster.size(); i++) {
+        std::cout << i << ": "
+                  << roster[i].studentID << " - "
+                  << roster[i].name << "\n";
+    }
+
+    std::cout << "Enter index to delete: ";
+    std::cin >> index;
+
+    if (index < 0 || index >= roster.size()) {
+        std::cout << "Invalid index.\n";
+        break;
+    }
+
+    roster.erase(roster.begin() + index);
+    std::cout << "Record deleted.\n";
+    break;
+}
             case 'E': saveToFile(roster); std::cout << "Exiting...\n";break;
             default: std::cout << "Invalid choice.\n";
         }
